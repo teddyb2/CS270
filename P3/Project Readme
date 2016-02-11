@@ -1,0 +1,116 @@
+Programming Assignment P3
+Floating Point in C
+
+Programming due Wednesday, Feb. 10 at 10:00pm, late deadline at 11:59pm.
+
+About The Assignment
+
+This assignment is designed to teach you how to do several floating point point operations in C without using either the float or double types. You will learn how to use the C language operators for binary and (&), binary or (|), and binary not (~). You will also use the C language bit shift operators (<< and >>). You will also learn simple pointer operations using C's address-of operator (&) and dereference operator (*).
+When you have completed this assignment you will understand how floating point values are stored in the computer, and how to perform several operations in the case where the underlying hardware/software does not provide floating point support. For example, the LC3 computer you will use later in this course has no floating point support.
+
+First read the Getting Started section below and then study the documentation for flt32.h in the Files tab to understand the details of the assignment.
+
+Basic Bit manipulation
+
+Binary and (&) will be used to extract the value of a bit and to set a bit to 0. This relies on the fact that the binary and (&) of a value and 1 results in the original value. Binary and (&) of a value and 0 results in 0. Binary or (|) is use to set a bit to 1. This relies on the the fact that binary or (|) of 1 and anything results in a 1.
+
+You will create masks. A mask is a bit pattern that contains 0's and 1's in appropriate places so when the binary and/or operation is performed, the result has extracted/modified the bits of interest. In the following examples B stands for bits of interest while x stands for a bit that is not of interest. Note that, in general, the bits of interest need not be consecutive. In this code, we will be dealing with consecutive sets of bits.
+
+
+  value:    xxxBBBBxxxxx  value: xxxBBBBxxxxx   value: xxxBBBBxxxxx
+  mask:     000111100000  mask:  111000011111   mask:  000111100000
+  -------   ------------         ------------          ------------
+  and(&)    000BBBB0000   and(&) xxx0000xxxxx   or(|)  xxx1111xxxxx
+  result:   isolate field        clear field           set field
+Bit positions are numbered from 31 to 0 with 0 being the least significant bit. The bit position corresponds to the power of 2 in the binary representation.
+
+You will need to create masks to extract the sign/exponent/mantissa fields and use the shift operators to convert them to values you can use. When you have computed the answerm you will use sift operations to reassemble the parts into the correct format.
+
+Getting Started
+
+Perform the following steps
+Create a directory for this assignment.
+Copy four files into this directory. It is easiest to right click on the link, and do a Save Target As.. for each of the files.
+flt32.c (complete this file)
+flt32.h (do not modify)
+testFlt32.c (do not modify)
+Makefile (do not modify)
+Open a terminal and make sure you are in the directory you created in step 1. The cd command can be used for this.
+In the terminal type the following command to build the executable.
+
+    make
+    
+You should see the following output:
+
+    /usr/bin/c11 -g -Wall -c -std=c99 flt32.c
+    /usr/bin/c11 -g -Wall -c -std=c99 testFlt32.c
+    /usr/bin/c11 -g -o testFlt32 flt32.o testFlt32.o
+    
+In the terminal type testFlt32 and read how to run the the program.
+In the terminal type testFlt32 bin -3.625 and you should see the output:
+
+    dec: -1066926080  hex: 0xC0680000  bin: 1100-0000-0110-1000-0000-0000-0000-0000
+    
+What you are seeing it the internal bit pattern of the floating point value -3.625 expressed as an integer, as hex, and as binary.
+You now have a functioning program. All the commands work, however, only bin will produce correct results at this point.
+
+Completing the Code
+
+Before attempting to write any of the functions of flt32.c, study the documentation in found in the files tab. Plan what you need to do before writing code.
+The best way to complete the code is to follow a write/compile/test sequence. Do not attempt to write everything at once. Rather choose one function and do the following steps.
+
+Write some/all of one function in flt32.c using your favorite editor.
+Save your changes and recompile field.c using make. You will find it convenient to work with both a terminal and editor window at the same time.
+Repeat steps 1 and 2 until there are no errors or warnings.
+Test the function you have been working on. Do not attempt to move on until you complete and thoroughly test a function.
+Repeat steps 1 thru 5 for the remaining functions.
+You may work on the functions in any order, but most are very simple and are support functions for the meat of the code. A sample solution prepared by the author contained the following:
+
+flt32_get_sign() - 1 line of code
+flt32_get_exp() - 1 line of code
+flt32_get_val() - 1 line of code
+flt32_get_all() - 3 lines of code
+flt32_abs() - 1 line of code
+flt32_negate() - 3 lines of code
+flt32_add() - 60 lines of code
+flt32_sub() - 1 line of code
+Your code may be a little longer, but in every case, these methods are quite simple. If you find any of your solution is much longer that stated, you will want to think about how you are approaching the problem.
+Floating Point Addition
+
+The single function flt32_add() is the only complex function in this assignment. Many of the things you need to do can be done by calling the support methods you have already written and thoroughly tested.
+The general algorithm for floating point addition is as follws:
+
+Extract the sign, exponent, and value from the 32-bit operands.
+Adjust values so both operands have identical exponents.
+Convert the signed magnitude operands to two's complement.
+Do an integer addition of the values.
+Convert the two's complement sum back to signed magnitude.
+Normalize the result by adjusting the exponent and shifting the sum value.
+Reassemble the sign, exponent and value into a 32-bit value.
+Grading Criteria
+
+100 points for perfect submission.
+0 points for no submission, will not compile, submitted class file, etc.
+Each test can make multiple calls to the function being tested, with different values.
+Preliminary Tests
+testCompile: checks that program compiles. (5 points)
+test1: calls testFlt32 with exp to check flt32_get_exp. (5 points)
+test2: calls testFlt32 with sign to check flt32_get_sign (positive number). (5 points)
+test3: calls testFlt32 with sign to check flt32_get_sign (negative number). (5 points)
+test4: calls testFlt32 with val to check flt32_get_val. (5 points)
+test5: calls testFlt32 with all to check flt32_get_all. (5 points)
+Final Tests
+test6: calls testFlt32 with abs to check flt32_abs (positive number). (5 points)
+test7: calls testFlt32 with abs to check flt32_abs (negative number). (5 points)
+test8: calls testFlt32 with neg to check flt32_negate (positive number). (5 points)
+test9: calls testFlt32 with neg to check flt32_negate (negative number). (5 points)
+test10: calls testFlt32 with add to check flt32_add, using operands with identical exponents. (5 points)
+test11: calls testFlt32 with sub to check flt32_sub, using operands with identical exponents. (5 points)
+test12: calls testFlt32 with add to check flt32_add, using operands with different exponents. (10 points)
+test13: calls testFlt32 with sub to check flt32_sub, using operands with different exponents. (10 points)
+test14: calls testFlt32 with add to check flt32_add, with arbitrary values. (5 points)
+test15: calls testFlt32 with add to check flt32_add, with arbitrary values. (5 points)
+test16: calls testFlt32 with sub to check flt32_sub, with arbitrary values. (5 points)
+test17: calls testFlt32 with sub to check flt32_sub, with arbitrary values. (5 points)
+Final tests will include the preliminary tests.
+Submit the single file flt32.c to the Checkin tab on the course website, as you were shown in the recitation.
